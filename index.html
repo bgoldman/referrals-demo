@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -266,26 +265,43 @@
 
     <section id="referrals">
         <div class="container">
-            <div class="row">
+            <div class="refer hide row">
                 <div class="col-lg-8 col-lg-offset-2">
                     <h2 class="section-heading text-center">Refer Your Friends!</h2>
                     <form method="post" id="referral-form">
                         <div class="form-group">
-                            <label for="refer-name">Name</label>
+                            <label>From Name</label>
+                            <input id="refer-from-name" class="form-control" type="text" value="" disabled />
+                        </div>
+                        <div class="form-group">
+                            <label>From Email</label>
+                            <input id="refer-from-email" class="form-control" type="text" value="" disabled />
+                        </div>
+                        <div class="form-group">
+                            <label for="refer-name">Recipient Name</label>
                             <input class="form-control" id-"refer-name" type="text" name="name" />
                         </div>
                         <div class="form-group">
-                            <label for="refer-email">Email</label>
+                            <label for="refer-email">Recipient Email</label>
                             <input class="form-control" id-"refer-email" type="text" name="email" />
                         </div>
                         <div class="form-group">
-                            <label for="refer-cell">Cell</label>
+                            <label for="refer-cell">Recipient Cell</label>
                             <input class="form-control" id-"refer-cell" type="text" name="cell" />
                         </div>
                         <div class="text-right">
+                            <input id="refer-from-user-id" class="form-control" type="hidden" value="" />
                             <input type="submit" class="btn btn-lg" value="Refer" />
                         </div>
                    </form>
+                </div>
+            </div>
+            <div class="login hide row">
+                <div class="col-lg-8 col-lg-offset-2">
+                    <h2 class="section-heading text-center">Login to Refer Your Friends!</h2>
+                    <div class="text-center">
+                        <fb:login-button scope="public_profile,email" onlogin="checkLoginState();"></fb:login-button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -305,8 +321,56 @@
     <!-- Custom Theme JavaScript -->
     <script src="js/creative.js"></script>
 
-    <script src="https://bgoldman.github.io/referrals-sdk/src/sdk.js"></script>
-    <script type=”text/javascript”>Referrals.init(‘referral-form’);</script>
+    <script type="text/javascript">
+    function checkLoginState() {
+        FB.getLoginStatus(function(response) {
+            if (response.status != 'connected') {
+                $('#referrals .refer').addClass('hide');
+                $('#referrals .login').removeClass('hide');
+                return;
+            }
+
+            FB.api('/me', { locale: 'en_US', fields: 'name, email' }, function(user) {
+                $('#referrals .refer').removeClass('hide');
+                $('#referrals .login').addClass('hide');
+                $('#refer-from-user-id').val(user.id);
+                $('#refer-from-name').val(user.name);
+                $('#refer-from-email').val(user.email);
+            });
+        });
+    }
+
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId      : '460785610793286',
+        cookie     : true,  // enable cookies to allow the server to access
+                            // the session
+        xfbml      : true,  // parse social plugins on this page
+        version    : 'v2.5' // use graph api version 2.5
+      });
+      checkLoginState();
+    };
+
+    // Load the SDK asynchronously
+    (function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "https://connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+    </script>
+    <script src="https://www.brandongoldman.com/referrals-sdk/src/sdk.js"></script>
+    <script type="text/javascript">
+    Referrals.init({
+        form: 'referral-form',
+        landingUrl: 'http://www.brandongoldman.com/referrals-demo/',
+        user: {
+            name: name,
+            email: email
+        }
+    });
+    </script>
 </body>
 
 </html>
