@@ -271,26 +271,26 @@
                     <form method="post" id="referral-form">
                         <div class="form-group">
                             <label>From Name</label>
-                            <input id="refer-from-name" class="form-control" type="text" value="" disabled />
+                            <input id="refer-from-name" name="from_name" class="form-control" type="text" value="" disabled />
                         </div>
                         <div class="form-group">
                             <label>From Email</label>
-                            <input id="refer-from-email" class="form-control" type="text" value="" disabled />
+                            <input id="refer-from-email" name="from_email" class="form-control" type="text" value="" disabled />
                         </div>
                         <div class="form-group">
                             <label for="refer-name">Recipient Name</label>
-                            <input class="form-control" id-"refer-name" type="text" name="name" />
+                            <input class="form-control" id-"refer-name" type="text" name="to_name" value="Brandon Awesome" />
                         </div>
                         <div class="form-group">
                             <label for="refer-email">Recipient Email</label>
-                            <input class="form-control" id-"refer-email" type="text" name="email" />
+                            <input class="form-control" id-"refer-email" type="text" name="to_email" value="brandon.goldman+awesome@gmail.com" />
                         </div>
                         <div class="form-group">
                             <label for="refer-cell">Recipient Cell</label>
-                            <input class="form-control" id-"refer-cell" type="text" name="cell" />
+                            <input class="form-control" id-"refer-cell" type="text" name="to_cell" value="6264169989" />
                         </div>
                         <div class="text-right">
-                            <input id="refer-from-user-id" class="form-control" type="hidden" value="" />
+                            <input id="refer-from-user-id" class="form-control" type="hidden" name="from_user_id" value="" />
                             <input type="submit" class="btn btn-lg" value="Refer" />
                         </div>
                    </form>
@@ -336,6 +336,8 @@
                 $('#refer-from-user-id').val(user.id);
                 $('#refer-from-name').val(user.name);
                 $('#refer-from-email').val(user.email);
+
+                loggedIn(user);
             });
         });
     }
@@ -360,16 +362,23 @@
       fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
     </script>
-    <script src="https://www.brandongoldman.com/referrals-sdk/src/sdk.js"></script>
+
+
+
+
+    <script src="http://localhost:3000/static/referrals.js"></script>
     <script type="text/javascript">
-    Referrals.init({
-        form: 'referral-form',
-        landingUrl: 'http://www.brandongoldman.com/referrals-demo/',
-        user: {
-            name: name,
-            email: email
-        }
-    });
+    var loggedIn = function(user) {
+        Referrals.init({
+            formId: 'referral-form',
+            landingUrl: 'http://www.brandongoldman.com/referrals-demo/',
+            user: {
+                id:    user.id,
+                name:  user.name,
+                email: user.email
+            }
+        });
+    }
     </script>
 </body>
 
